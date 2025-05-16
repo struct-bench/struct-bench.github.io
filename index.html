@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Struct-Bench</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Center-align all table text -->
+    <style>
+        .leaderboard-table th,
+        .leaderboard-table td {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Struct-Bench</h1>
+        <p class="subtitle">A Benchmark for Evaluating Differentially Private Synthetic Data for Structured Datasets Containing Natural Language</p>
+        <nav>
+            <a href="https://github.com/struct-bench/structpe" class="button"><i class="fab fa-github"></i> GitHub</a>
+            <a href="https://tinyurl.com/structbench-submission" class="button submit-button"><i class="fas fa-upload"></i> Submit Results</a>
+        </nav>
+    </header>
+
+    <main>
+        <!-- Abstract -->
+        <section id="abstract" class="section">
+            <h2 class="title is-3">Introduction</h2>
+            <div class="content abstract-content has-text-justified">
+                <p>
+                    Differentially private (DP) synthetic data generation is a promising technique for utilizing private datasets that otherwise can’t be exposed for model training or other analytics. While much research literature has focused on generating private unstructured text and image data, in enterprise settings, structured data (e.g., tabular) is more common, often including natural language fields or components. Existing synthetic data evaluation techniques (e.g., FID) struggle to capture the structural properties and correlations of such datasets. In this work, we propose Struct-Bench, a framework and benchmark for evaluating synthetic datasets derived from structured datasets that contain natural language data. The Struct-Bench framework requires users to provide a representation of their dataset structure as a Context-Free Grammar (CFG). Our benchmark comprises five real-world and two synthetically generated datasets, each annotated with CFGs. We show that these datasets demonstrably present a great challenge even for state-of-the-art DP synthetic data generation methods. Struct-Bench also includes reference implementations of different metrics and a leaderboard, thereby providing researchers a standardized evaluation platform to benchmark and investigate privacy-preserving synthetic data generation methods. Further, we present a case study showing how to use Struct-Bench to improve the synthetic data quality of Private Evolution on structured data. The benchmark and the leaderboard will be publicly available at https://struct-bench.github.io.
+                </p>
+            </div>
+        </section>
+
+        <!-- Results Table -->
+        <section id="results" class="section">
+            <h2 class="title is-3">Struct-Bench Average Benchmarking Results</h2>
+            <div class="table-container">
+                <table class="leaderboard-table">
+                   <thead>
+                        <tr>
+                            <th rowspan="2">Baseline</th>
+                            <th colspan="3">Structural Metrics</th>
+                            <th colspan="2">Non-Structural Metrics</th>
+                            <th rowspan="2">Downstream Acc ↑</th>
+                        </tr>
+                        <tr>
+                            <th>CFG-PR ↑</th>
+                            <th>KND ↓</th>
+                            <th>AM ↓</th>
+                            <th>KNN-Precision ↑</th>
+                            <th>KNN-Recall ↑</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>IF (ε = 0)</td>
+                            <td>0.8633</td>
+                            <td>0.2614</td>
+                            <td>35.8261</td>
+                            <td>0.2354</td>
+                            <td>0.0573</td>
+                            <td>0.5412</td>
+                        </tr>
+                        <tr>
+                            <td>FT (ε = ∞)</td>
+                            <td>0.0768</td>
+                            <td>0.0315</td>
+                            <td>52.6984</td>
+                            <td>0.2141</td>
+                            <td>0.1898</td>
+                            <td>0.4426</td>
+                        </tr>
+                        <tr>
+                            <td>DP-FT (ε = 4)</td>
+                            <td>0.0000</td>
+                            <td>0.0020</td>
+                            <td>0.0060</td>
+                            <td>0.0092</td>
+                            <td>0.0279</td>
+                            <td>0.3802</td>
+                        </tr>
+                        <tr>
+                            <td>PE (ε = 4)</td>
+                            <td>0.8648</td>
+                            <td>0.1595</td>
+                            <td>40.0860</td>
+                            <td>0.2639</td>
+                            <td>0.0491</td>
+                            <td>0.5442</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Analysis -->
+        <section id="analysis" class="section">
+            <h2 class="title is-3">Analysis</h2>
+            <div class="content analysis-content has-text-justified">
+                Based on an analysis of the results on Struct-Bench, we present the following observations:
+                <ul>
+                    <li><em>No single metric fully describes synthetic data quality.</em> For a single algorithm and dataset, some metrics can be high, while others remain low. This further motivates the need for <strong>Struct-Bench</strong>, which aggregates many diverse metrics.</li>
+                    <li><em>Existing DP synthetic data generators struggle to learn complicated data structures.</em> All baselines achieve a <code>CFG-PR</code> score below 0.2 on the ICLR dataset, which features more node types and a significantly more intricate graph structure than ShareGPT.</li>
+                    <li><em>DP fine-tuning alone cannot learn structure.</em> At ε = 4, it achieves a <code>CFG-PR</code> of 0 on all of our datasets. Even at ε = ∞, it reaches at best a <code>CFG-PR</code> of 0.53 on ShareGPT, seemingly because ShareGPT has fewer formatting tokens than other datasets (e.g., JSON tags in tabular datasets).</li>
+                    <li><em>PE and IF learn structure at the expense of semantic performance.</em> Although PE and IF reliably capture the data structure, they suffer from poor semantic performance (nearly 0 <code>Recall</code>).</li>
+                </ul>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; <span id="current-year"></span> Struct-Bench.</p>
+    </footer>
+
+    <script>
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+    </script>
+</body>
+</html>
